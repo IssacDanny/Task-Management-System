@@ -1,10 +1,10 @@
 const User = require("../models/User");
-const brcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 
 // Generate JWT token
-const genertation = (userId) => {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expireIn: "7d" });
+const generateToken = (userId) => {
+    return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 //@desc     Register a new user
@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
             profileImageUrl,
             role,
         });
-
+        
         // Return user data with JWT
         res.status(201).json({
             _id: user._id,
@@ -51,7 +51,8 @@ const registerUser = async (req, res) => {
             profileImageUrl: user.profileImageUrl,
             token: generateToken(user._id),
         });
-    } catch {
+    } catch (error) {
+        
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
@@ -84,7 +85,7 @@ const loginUser = async (req, res) => {
             profileImageUrl: user.profileImageUrl,
             token: generateToken(user._id),
         });
-    } catch {
+    } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
@@ -99,7 +100,7 @@ const getUserProfile = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
         res.json(user);
-    } catch {
+    } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
@@ -132,7 +133,7 @@ const updateUserProfile = async (req, res) => {
             role: updataUser.role,
             roken: generateToken(updataUser._id),
         });
-    } catch {
+    } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
